@@ -1,23 +1,23 @@
 <script type="text/javascript">
   import Nested from './Nested.svelte';
-  export let name = 'unknown';
+  import H1 from '/src/components/atoms/Header1.svelte';
+  import H2 from '/src/components/atoms/Header2.svelte';
+  import H3 from '/src/components/atoms/Header3.svelte';
+  import H4 from '/src/components/atoms/Header4.svelte';
+  import P from '/src/components/atoms/Paragraph.svelte';
+  // export let name = 'unknown';
 </script>
 
-<style type="text/stylus">
-  /* prettier-ignore */
-  .note
-    color #ff3e00
-  h1
-    color blue
-</style>
+<H1 content='test'/>
+<P content='Welkom op mijn svelte template'/>
+<H2 content='hoi'/>
+<P content='Ik ben nog veel aan het spelen'/>
+<H3 content='ding'/>
+<P content='Maar langzaam maar zeker begin ik het te begrijpen'/>
+<H4 content='pizza'/>
 
-<!-- prettier-ignore -->
-<template type="text/pug">
-  h1.note This is the svelte-preproces example - built with svite
-  hr
-  h1 Hello!
-  br
-  input(bind:value="{name}")
-  br
-  Nested("{name}")
-</template>
+<!-- <style>
+  
+</style> -->
+
+
