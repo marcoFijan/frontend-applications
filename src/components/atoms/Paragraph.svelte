@@ -3,7 +3,7 @@
 </script>
 
 <style>
-    h1{
+    p{
         color: #2A292F;
         font-size: 1em;
     }
