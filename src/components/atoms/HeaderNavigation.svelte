@@ -4,10 +4,9 @@
 
 <style>
     h1{
-        /* color: #BA3E8D; */
-        font-size: 2em;
-        padding: 0;
-        color: #2A292F;
+        font-size: 1.8em;
+        padding: .7em;
+        color: white;
         font-weight: normal;
         font-family: 'Roboto', sans-serif;
         font-weight: 500;
