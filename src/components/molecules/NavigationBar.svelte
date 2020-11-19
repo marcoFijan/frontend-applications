@@ -1,19 +1,21 @@
 <script type="text/javascript">
   import Nav from '/src/components/atoms/Nav.svelte';
-  import NavList from '/src/components/atoms/NavList.svelte';
-  import NavListItem from '/src/components/atoms/NavListItem.svelte';
-  import H1 from '/src/components/atoms/HeaderNavigation.svelte';
+  import List from '/src/components/atoms/NavList.svelte';
+  import NavItem from '/src/components/atoms/NavItem.svelte';
     // export let name = 'unknown';
 </script>
 
+<style>
+    :global(.navList){
+        flex-direction: row;
+        background: red;
+  }
+</style>
 
 <Nav>
-    <H1 content='Navigatie' class='navigationHeader'/>
-    <NavList>
-        <NavListItem url='#problem' content='Het probleem'/>
-        <NavListItem url='#availibility' content='Beschikbaarheid'/>
-        <NavListItem url='#amount' content='Aantallen'/>
-        <NavListItem url='#percentage' content='Percentages'/>
-        <NavListItem url='#compare' content='Vergelijking'/>
-    </NavList>
+    <List class="navList">
+        <NavItem url='#problem' content='Home'/>
+        <NavItem url='#availibility' content='Fetchen van Data'/>
+        <NavItem url='#amount' content='Bronnen'/>
+    </List>
 </Nav>

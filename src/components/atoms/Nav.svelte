@@ -3,11 +3,11 @@
   
 <style>
     nav{
-        background: #36474F;
-        height: 100vh;
-        width: 15%;
+        width: 100%;
+        max-width: 1600px;
         min-width: 14em;   
         box-sizing: border-box;
+        position: fixed;
     }
 </style>
   

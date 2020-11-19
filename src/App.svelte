@@ -7,6 +7,8 @@
   import P from '/src/components/atoms/Paragraph.svelte';
   import NavBar from '/src/components/molecules/NavigationBar.svelte';
   import Home from '/src/components/templates/Home.svelte';
+  import BannerImage from '/src/components/atoms/BannerImage.svelte';
+  import BannerTitle from '/src/components/atoms/BannerTitle.svelte';
   // import Nav from '/src/components/atoms/Nav.svelte';
   // import NavList from '/src/components/atoms/NavList.svelte';
   // import NavListItem from '/src/components/atoms/NavListItem.svelte';
@@ -15,29 +17,23 @@
 
 <style>
   :global(body){
-    margin: 0;
-    display: flex;
+    margin: 0 auto;
+    max-width: 1600px;
+    background-image: url('/public/background.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
   }
+
+  
 </style>
+
 <Home/>
 
-<!-- <NavBar/> -->
-
-
-<H1 content='test'/>
-<P content='Welkom op mijn svelte template'/>
-<H2 content='hoi'/>
-<P content='Ik ben nog veel aan het spelen'/>
-<H3 content='ding'/>
-<P content='Maar langzaam maar zeker begin ik het te'/>
-<H4 content='pizza'/>
-<!-- <Nav>
-  <NavList>
-      <NavListItem url='tweakers.net' content='tweakers'/>
-  </NavList>
-</Nav> -->
-<!-- <style>
-  
-</style> -->
+<!-- <section>
+  <BannerImage src='/public/wheelchair.jpg' alt='wheelchair image'/>
+  <BannerTitle content='Denk aan de invalide!'/>
+</section> -->
 
 

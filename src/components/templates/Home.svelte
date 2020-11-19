@@ -5,19 +5,18 @@
     import Footer from '/src/components/organisms/Footer.svelte';
 </script>
   
-  <!-- <style>
-    :global(body){
-      margin: 0;
-      display: flex;
+  <style>
+    div{
+        margin-left: 15%;
+        width: 100%;
+        padding-right: 15%;
+        box-sizing: border-box;
     }
-  </style> -->
+  </style>
   
-  <Navigation/>
-  <div>
     <Header/>
     <HomeContent/>
     <Footer/>
-  </div>
 
   <!-- <Nav>
     <NavList>

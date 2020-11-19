@@ -1,5 +1,5 @@
 <script>
-    import NavBar from '/src/components/molecules/NavigationBar.svelte';
+    import Sidebar from '/src/components/molecules/Sidebar.svelte';
 </script>
 
-<NavBar/>
+<Sidebar/>

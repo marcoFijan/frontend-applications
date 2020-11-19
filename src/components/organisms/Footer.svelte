@@ -3,11 +3,11 @@
 </script>
 
 <style>
-    header{
+    footer{
         background: green;
     }
 </style>
 
-<header>
+<footer>
     <H1 content='this is the footer'/>
-</header>
+</footer>

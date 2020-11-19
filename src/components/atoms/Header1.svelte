@@ -5,7 +5,7 @@
 <style>
     h1{
         /* color: #BA3E8D; */
-        font-size: 2em;
+        font-size: 5em;
         padding: 0;
         color: #2A292F;
         font-weight: normal;
