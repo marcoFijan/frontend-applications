@@ -8,22 +8,47 @@
     import { setupData } from '/src/script/DisabledAmount.js'
 
     const cbsUrl = 'https://raw.githubusercontent.com/marcoFijan/hostRDWData/main/provincesCBS.json';
-    let disabledAmount = [];
+    let data = [];
+    $: userInputLocations = [];
+    let checkNederland = false;
 
-    CBSStore.subscribe(data => {
-        disabledAmount = data;
+    // CBSStore.subscribe(data => {
+    //     disabledAmount = data;
+    // })
+
+    onMount(async function () {
+        data = await setupData();
+        if(!userInputLocations[0]){
+            userInputLocations.push(data[12])
+        }
+        userInputLocations = userInputLocations;
+        console.log(userInputLocations)
+        return userInputLocations;
     })
 
-    async function getLocation(locationName) {
-        const data = await setupData();
+    function addLocation(locationName) {
+        console.log('running addlocation')
         for (let i = 0; i < data.length; i++) {
             if (data[i].location === locationName) {
-            return data[i];
+                let isDouble = (userInputLocations.filter(location => location.location === locationName).length) > 0;
+                if (isDouble) {
+                    removeLocation(locationName)
+                }
+                else{
+                    userInputLocations.push(data[i]);
+                    userInputLocations = userInputLocations;
+                    console.log(userInputLocations)
+                }
             }
         }
     }
 
-    let getLocationPromise = getLocation('Nederland');
+    function removeLocation(locationName){
+        userInputLocations = userInputLocations.filter(location => (location.location !== locationName))
+    }
+
+    // let getLocationPromise = getLocation();
+
 
 </script>
 
@@ -52,22 +77,31 @@
     h2Content='Hoeveel inwoners zijn er invalide?'
     pContent='Volgens de cijfers van het CBS heeft gemiddeld 15% van de Nederlandse bevolking 1 of meerdere fysieke handicap. Dit zou betekenen dat minimaal 15% van de parkeergarages beschikbaar zouden moeten zijn voor mensen met een lichamelijke handicap. Maar is dat ook zo? Daarnaast is het gemiddelde 15 procent, maar er zijn ook provincies waar er meer mensen wonen met een lichamelijke beperking. Vind uw eigen provincie:'>
     <section>
-        {#await getLocationPromise}
-            <p>...waiting</p>
-        {:then location}
-            <LocationBubble 
-                h3Text={location.location}
-                pText={location.percentage+'%'}
-            />
-            <!-- {#each locations as location}
+        {#each userInputLocations as location}
                 <LocationBubble 
-                h3Text={location.location}
-                pText={location.percentage+'%'}
+                    h3Text={location.location}
+                    pText={location.percentage+'%'}
                 />
-            {/each} -->
+        {/each}
+        <button on:click={() => addLocation('Groningen')}>
+            Groningen
+        </button>
+
+        <!-- {#await getLocationPromise}
+            <p>...waiting</p>
+        {:then locations}
+            <button on:click={() => addLocation('Groningen')}>
+                Groningen
+            </button>
+            {#each locations as location}
+                <LocationBubble 
+                    h3Text={location.location}
+                    pText={location.percentage+'%'}
+                />
+            {/each}
         {:catch error}
             <p style="color: red">{error.message}</p>
-        {/await}
+        {/await} -->
     </section>
     </Article>
     <Article 
