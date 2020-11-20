@@ -14,16 +14,16 @@
         disabledAmount = data;
     })
 
-    async function getLocation() {
+    async function getLocation(locationName) {
         const data = await setupData();
         for (let i = 0; i < data.length; i++) {
-            if (data[i].location === "Limburg") {
+            if (data[i].location === locationName) {
             return data[i];
             }
         }
     }
 
-    let getLocationPromise = getLocation();
+    let getLocationPromise = getLocation('Nederland');
 
 </script>
 
@@ -50,12 +50,15 @@
     />
     <Article 
     h2Content='Hoeveel inwoners zijn er invalide?'
-    pContent='lijst met percentage gemeddeld nederland en gemiddeld per provincie...'>
+    pContent='Volgens de cijfers van het CBS heeft gemiddeld 15% van de Nederlandse bevolking 1 of meerdere fysieke handicap. Dit zou betekenen dat minimaal 15% van de parkeergarages beschikbaar zouden moeten zijn voor mensen met een lichamelijke handicap. Maar is dat ook zo? Daarnaast is het gemiddelde 15 procent, maar er zijn ook provincies waar er meer mensen wonen met een lichamelijke beperking. Vind uw eigen provincie:'>
     <section>
         {#await getLocationPromise}
             <p>...waiting</p>
-        {:then locations}
-            <p>{locations.location}</p>
+        {:then location}
+            <LocationBubble 
+                h3Text={location.location}
+                pText={location.percentage+'%'}
+            />
             <!-- {#each locations as location}
                 <LocationBubble 
                 h3Text={location.location}

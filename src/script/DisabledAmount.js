@@ -5,7 +5,7 @@ let data = [];
 
 export async function setupData() {
   data = await getData();
-  const averagePercentage = getAverage(data);
+  const averagePercentage = Math.round(getAverage(data));
   data.push({
     location: "Nederland",
     percentage: averagePercentage,
