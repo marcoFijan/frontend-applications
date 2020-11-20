@@ -4,17 +4,26 @@
     import OpeningBanner from '/src/components/molecules/OpeningBanner.svelte';
     import Article from '/src/components/molecules/Article.svelte';
     import LocationBubble from '/src/components/molecules/LocationBubble.svelte';
-    // import Sidebar from '/src/components/molecules/Sidebar.svelte';
+    import CBSStore from '/src/stores/CBSStore.js'
+    import { setupData } from '/src/script/DisabledAmount.js'
 
     const cbsUrl = 'https://raw.githubusercontent.com/marcoFijan/hostRDWData/main/provincesCBS.json';
-    let provinces = [];
+    let disabledAmount = [];
 
+    CBSStore.subscribe(data => {
+        disabledAmount = data;
+    })
 
-    onMount(async function() {
-        const response = await fetch(cbsUrl);
-        provinces = await response.json();
-        console.log(provinces)
-    });
+    async function getLocation() {
+        const data = await setupData();
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].location === "Limburg") {
+            return data[i];
+            }
+        }
+    }
+
+    let getLocationPromise = getLocation();
 
 </script>
 
@@ -27,7 +36,7 @@
     section{
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(10em, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(11em, 1fr));
         grid-gap: 2.4em;
     }
 </style>
@@ -43,14 +52,20 @@
     h2Content='Hoeveel inwoners zijn er invalide?'
     pContent='lijst met percentage gemeddeld nederland en gemiddeld per provincie...'>
     <section>
-    {#each provinces as province}
-      <LocationBubble 
-      h3Text={province.province}
-      pText={province.percentage}
-      />
-    {/each}
+        {#await getLocationPromise}
+            <p>...waiting</p>
+        {:then locations}
+            <p>{locations.location}</p>
+            <!-- {#each locations as location}
+                <LocationBubble 
+                h3Text={location.location}
+                pText={location.percentage+'%'}
+                />
+            {/each} -->
+        {:catch error}
+            <p style="color: red">{error.message}</p>
+        {/await}
     </section>
-
     </Article>
     <Article 
     h2Content='Hoeveel invalide parkeerplekken zijn beschikbaar?'

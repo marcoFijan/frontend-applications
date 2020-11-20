@@ -14,5 +14,5 @@
 <article>
     <H2 content={h2Content}/>
     <P content={pContent}/>
-<slot/>
+  <slot/>
 </article>
