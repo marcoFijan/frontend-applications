@@ -18,12 +18,16 @@
 <style>
   :global(body){
     margin: 0 auto;
-    max-width: 1600px;
-    background-image: url('/public/background.jpg');
+    max-width: 1100px;
+    background-image: url('/public/background.svg');
     background-attachment: fixed;
     background-size: cover;
     background-repeat: no-repeat;
     box-sizing: border-box;
+  }
+
+  :global(strong){
+    color: #0077cc;
   }
 
   

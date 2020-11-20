@@ -6,10 +6,7 @@
 </script>
 
 <style>
-    :global(.navList){
-        flex-direction: row;
-        background: red;
-  }
+ 
 </style>
 
 <Nav>

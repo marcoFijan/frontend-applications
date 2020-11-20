@@ -6,15 +6,16 @@
     h1{
         font-size: 4em;
         padding: 0;
-        margin-top: 10%;
-        color: #2A292F;
+        width: 8em;
+        right: 10%;
+        margin-top: 11vh;
+        color: white;
         font-weight: normal;
         font-family: 'Roboto', sans-serif;
-        font-weight: 300;
+        font-weight: 500;
         position: absolute;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
+        text-align: right;
+        text-shadow: 2px 2px black;
     }
 </style>
 

@@ -3,6 +3,8 @@
   
 <style>
     ul{
+        width: 100%;
+        min-width: 14em;   
         list-style: none;
         padding: 0;
         margin: 0;

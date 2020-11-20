@@ -8,7 +8,7 @@
         text-decoration: none;
     }
     li{
-        color: #36474F;
+        color: white;
         padding: 1em 2em;
         font-size: 1.1em;
         box-sizing: border-box;
@@ -16,6 +16,7 @@
         transition: all .3s ease-in;
         font-family: 'Roboto', sans-serif;
         font-weight: 300;
+        text-shadow: .05em .05em black;
     }
     li:hover{
         background: white;

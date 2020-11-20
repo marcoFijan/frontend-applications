@@ -1,13 +1,12 @@
 <script>
-    export let content = 'Header 1';
+    export let content = 'Paragraph';
 </script>
 
 <style>
     p{
-        color: #2A292F;
         font-size: 1.1em;
         font-family: 'Roboto', sans-serif;
-        font-weight: 400;
+        font-weight: 300;
     }
 </style>
 

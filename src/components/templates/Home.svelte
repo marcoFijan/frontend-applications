@@ -6,12 +6,6 @@
 </script>
   
   <style>
-    div{
-        margin-left: 15%;
-        width: 100%;
-        padding-right: 15%;
-        box-sizing: border-box;
-    }
   </style>
   
     <Header/>

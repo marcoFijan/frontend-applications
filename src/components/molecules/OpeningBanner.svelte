@@ -6,11 +6,10 @@
 <style>
     section{
         position: relative;
-        z-index: 0;
     }
 </style>
 
 <section>
   <BannerImage src='/wheelchair.jpg' alt='wheelchair image'/>
-  <BannerTitle content='Denkt u ook aan de <strong>invalide?</strong>'/>
+  <BannerTitle content='Waar kunnen de <strong>invaliden</strong> parkeren?'/>
 </section>

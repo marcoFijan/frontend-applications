@@ -8,6 +8,7 @@
         font-size: 1.2em;
         font-family: 'Roboto', sans-serif;
         font-weight: 500;
+        color: #003580;
     }
 </style>
 
