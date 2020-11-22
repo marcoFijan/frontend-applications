@@ -1,23 +1,84 @@
 <script>
     import { onMount } from 'svelte'
+    import { onDestroy } from 'svelte'
     import OpeningArticle from '/src/components/molecules/OpeningArticle.svelte';
     import OpeningBanner from '/src/components/molecules/OpeningBanner.svelte';
     import Article from '/src/components/molecules/Article.svelte';
     import LocationBubble from '/src/components/molecules/LocationBubble.svelte';
     import CBSStore from '/src/stores/CBSStore.js'
     import { setupData } from '/src/script/DisabledAmount.js'
+    import Button from '/src/components/atoms/CustomButton.svelte';
+    import Checkbox from '/src/components/atoms/CustomCheckbox.svelte';
+    import InputList from '/src/components/atoms/CustomInputList.svelte';    
+    
+    $: provinces = [{
+        name:'Groningen',
+        clicked: false
+    },
+    {
+        name:'Friesland',
+        clicked: false
+    },
+    {
+        name:'Overijssel',
+        clicked: false
+    },
+    {
+        name:'Drenthe',
+        clicked: false
+    },
+    {
+        name:'Gelderland',
+        clicked: false
+    },
+    {
+        name:'Limburg',
+        clicked: false
+    },
+    {
+        name:'Noord-Brabant',
+        clicked: false
+    },
+    {
+        name:'Zuid-Holland',
+        clicked: false
+    },
+    {
+        name:'Noord-Holland',
+        clicked: false
+    },
+    {
+        name:'Zeeland',
+        clicked: false
+    },
+    {
+        name:'Utrecht',
+        clicked: false
+    },
+    {
+        name:'Flevoland',
+        clicked: false
+    },
+    {
+        name:'Nederland',
+        clicked: true
+    }];
+    let selected;
 
     const cbsUrl = 'https://raw.githubusercontent.com/marcoFijan/hostRDWData/main/provincesCBS.json';
     let data = [];
     $: userInputLocations = [];
-    let checkNederland = false;
 
-    // CBSStore.subscribe(data => {
-    //     disabledAmount = data;
+    // CBSStore.subscribe(storeData => {
+    //     userInputLocations = storeData;
     // })
 
     onMount(async function () {
         data = await setupData();
+        CBSStore.subscribe(storeData => {
+            userInputLocations = storeData;
+        })
+
         if(!userInputLocations[0]){
             userInputLocations.push(data[12])
         }
@@ -26,12 +87,21 @@
         return userInputLocations;
     })
 
+    onDestroy()
+
     function addLocation(locationName) {
         console.log('running addlocation')
         for (let i = 0; i < data.length; i++) {
             if (data[i].location === locationName) {
                 let isDouble = (userInputLocations.filter(location => location.location === locationName).length) > 0;
-                if (isDouble) {
+                provinces.forEach(province => {
+                    if(province.name === locationName){
+                        province.clicked = !province.clicked
+                        console.log(province.clicked)
+                        console.log(provinces)
+                    }
+                 })
+                if (isDouble) {       
                     removeLocation(locationName)
                 }
                 else{
@@ -58,11 +128,16 @@
         min-height: 100vh;
         z-index: 1;
     }
+
     section{
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(11em, 1fr));
-        grid-gap: 2.4em;
+        grid-template-columns: repeat(auto-fill, minmax(12em, 1fr));
+        grid-gap: 1em;
+    }
+
+    li{
+        padding: .8em 0;
     }
 </style>
 <!-- <Sidebar/> -->
@@ -76,33 +151,22 @@
     <Article 
     h2Content='Hoeveel inwoners zijn er invalide?'
     pContent='Volgens de cijfers van het CBS heeft gemiddeld 15% van de Nederlandse bevolking 1 of meerdere fysieke handicap. Dit zou betekenen dat minimaal 15% van de parkeergarages beschikbaar zouden moeten zijn voor mensen met een lichamelijke handicap. Maar is dat ook zo? Daarnaast is het gemiddelde 15 procent, maar er zijn ook provincies waar er meer mensen wonen met een lichamelijke beperking. Vind uw eigen provincie:'>
-    <section>
-        {#each userInputLocations as location}
-                <LocationBubble 
-                    h3Text={location.location}
-                    pText={location.percentage+'%'}
-                />
-        {/each}
-        <button on:click={() => addLocation('Groningen')}>
-            Groningen
-        </button>
-
-        <!-- {#await getLocationPromise}
-            <p>...waiting</p>
-        {:then locations}
-            <button on:click={() => addLocation('Groningen')}>
-                Groningen
-            </button>
-            {#each locations as location}
-                <LocationBubble 
-                    h3Text={location.location}
-                    pText={location.percentage+'%'}
-                />
+        <InputList>
+            {#each provinces as item}
+                <li>
+                    <Checkbox selected={item.clicked} checkboxEvent={() => addLocation(item.name)} labelText={item.name}></Checkbox>
+                    <!-- <Button selected={!item.clicked} buttonEvent={() => addLocation(item.name)} buttonText={item.name}></Button> -->
+                </li>
             {/each}
-        {:catch error}
-            <p style="color: red">{error.message}</p>
-        {/await} -->
-    </section>
+        </InputList>
+        <section>
+            {#each userInputLocations as location}
+                    <LocationBubble 
+                        h3Text={location.location}
+                        pText={location.percentage+'%'}
+                    />
+            {/each}
+        </section>
     </Article>
     <Article 
     h2Content='Hoeveel invalide parkeerplekken zijn beschikbaar?'

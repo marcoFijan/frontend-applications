@@ -18,7 +18,7 @@
 <style>
   :global(body){
     margin: 0 auto;
-    max-width: 1100px;
+    max-width: 1200px;
     background-image: url('/background.svg');
     background-attachment: fixed;
     background-size: cover;
