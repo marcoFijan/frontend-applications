@@ -55,14 +55,13 @@ let provinces = [
   },
 ];
 
-// let storedProvinces = JSON.parse(localStorage.getItem("provincesList"));
-const CBSProvincesStore = writable(provinces);
-
-// CBSProvincesStore.subscribe((value) => {
-//   localStorage.setItem(
-//     "provincesList",
-//     value === "" ? provinces : JSON.stringify(value)
-//   );
-// });
+let storedProvinces = JSON.parse(localStorage.getItem("provincesList"));
+const CBSProvincesStore = writable(storedProvinces || provinces);
 
 export default CBSProvincesStore;
+CBSProvincesStore.subscribe((value) => {
+  localStorage.setItem(
+    "provincesList",
+    value === null ? JSON.stringify(provinces) : JSON.stringify(value)
+  );
+});

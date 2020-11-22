@@ -1,6 +1,5 @@
 <script>
-    import { afterUpdate, onMount } from 'svelte'
-    import { onDestroy } from 'svelte'
+    import { onDestroy, beforeUpdate, onMount, tick } from 'svelte'
     import OpeningArticle from '/src/components/molecules/OpeningArticle.svelte';
     import OpeningBanner from '/src/components/molecules/OpeningBanner.svelte';
     import Article from '/src/components/molecules/Article.svelte';
@@ -12,7 +11,7 @@
     import Checkbox from '/src/components/atoms/CustomCheckbox.svelte';
     import InputList from '/src/components/atoms/CustomInputList.svelte';  
 
-    $: provinces = [];
+    $: provinces = []; 
     let data = [];
     $: userInputLocations = [];
     let unsubProvince;
@@ -27,9 +26,10 @@
         unsubCBS = CBSStore.subscribe(storeData => {
             userInputLocations = storeData;  
         });
-        unsubProvince = CBSProvincesStore.subscribe(data => {
+        await tick();
+        unsubProvince =  CBSProvincesStore.subscribe(data => {
             provinces = data; 
-            console.log('data', provinces) 
+            console.log('data', data) 
         });  
         if(!userInputLocations[0]){
             userInputLocations.push(data[12])   
@@ -38,9 +38,9 @@
         console.log(userInputLocations)
         return userInputLocations;
     }) 
- 
+
     onDestroy(() =>{
-        console.log('component destroyed');
+        console.log('component destroyed'); 
         CBSProvincesStore.update(() => { 
             return provinces;   
         });
@@ -48,7 +48,7 @@
             return userInputLocations;
         })
         unsubProvince(); 
-        unsubCBS();
+        unsubCBS(); 
     });  
  
     function addLocation(locationName) {
@@ -71,6 +71,9 @@
                 }
             }
         }
+        CBSProvincesStore.update(() => { 
+            return provinces;   
+        });        
     }
 
     function removeLocation(locationName){
@@ -110,7 +113,7 @@
     h2Content='Hoeveel inwoners zijn er invalide?'
     pContent='Volgens de cijfers van het CBS heeft gemiddeld 15% van de Nederlandse bevolking 1 of meerdere fysieke handicap. Dit zou betekenen dat minimaal 15% van de parkeergarages beschikbaar zouden moeten zijn voor mensen met een lichamelijke handicap. Maar is dat ook zo? Daarnaast is het gemiddelde 15 procent, maar er zijn ook provincies waar er meer mensen wonen met een lichamelijke beperking. Vind uw eigen provincie:'>
         <InputList>
-            {#each provinces as item} 
+            {#each provinces as item}  
                 <li>
                     <Checkbox selected={item.clicked} checkboxEvent={() => addLocation(item.name)} labelText={item.name}></Checkbox>
                     <!-- <Button selected={!item.clicked} buttonEvent={() => addLocation(item.name)} buttonText={item.name}></Button> -->
