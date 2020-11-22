@@ -34,6 +34,7 @@
     label:hover{
         transition: .5s ease-in;
         font-weight: 500;
+        cursor: pointer;
     }
 
     input:checked + label{

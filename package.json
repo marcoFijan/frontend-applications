@@ -5,7 +5,10 @@
     "dev": "svite",
     "build": "svite build"
   },
-  "dependencies": {},
+  "dependencies": {
+    "svelte-async-readable": "^1.3.2",
+    "svelte-persistent-store": "^0.1.4"
+  },
   "devDependencies": {
     "pug": "^3.0.0",
     "stylus": "^0.54.8",
