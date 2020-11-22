@@ -16,9 +16,6 @@
     $: userInputLocations = [];
     let unsubProvince;
     let unsubCBS;
-    // CBSStore.subscribe(storeData => {
-    //     userInputLocations = storeData;
-    // })
  
     onMount(async function () {
         console.log('component mounted')
@@ -26,7 +23,6 @@
         unsubCBS = CBSStore.subscribe(storeData => {
             userInputLocations = storeData;  
         });
-        await tick();
         unsubProvince =  CBSProvincesStore.subscribe(data => {
             provinces = data; 
             console.log('data', data) 
@@ -73,7 +69,10 @@
         }
         CBSProvincesStore.update(() => { 
             return provinces;   
-        });        
+        }); 
+        CBSStore.update(() => {
+            return userInputLocations;
+        })       
     }
 
     function removeLocation(locationName){
