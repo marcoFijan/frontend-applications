@@ -54,38 +54,6 @@ async function getData() {
   return await json.RDWData;
 }
 
-// import { RDWData } from "/src/script/RDWDataset.json";
-
-// const parkingSpecsURL =
-//   "https://raw.githubusercontent.com/marcoFijan/hostRDWData/main/RDWDataset.json";
-// // const parkingSpecsURL = "https://api.jsonbin.io/b/5fbb8c1a04be4f05c9292c8e";
-// const proxyURL = "https://cors-anywhere.herokuapp.com/";
-// const provinces = [
-//   "groningen",
-//   "friesland",
-//   "overijssel",
-//   "drenthe",
-//   "gelderland",
-//   "limburg",
-//   "noord-brabant",
-//   "zuid-holland",
-//   "noord-holland",
-//   "zeeland",
-//   "utrecht",
-//   "flevoland",
-//   "onbekend",
-// ];
-
-// export function setupRDWData(parkingSpecsURL) {
-//   return getData(parkingSpecsURL);
-// }
-
-// async function getData(url) {
-//   const response = await fetch(url);
-//   const json = await response.json();
-//   return await json;
-// }
-
 function changeUnknown(parkingGarages) {
   const averageCapacity = Math.round(getAverageCapacity(parkingGarages));
   console.log(averageCapacity);

@@ -1,39 +1,49 @@
 <script>
     import { onDestroy, onMount, tick } from 'svelte'
+    // Import Molecules
     import OpeningArticle from '/src/components/molecules/OpeningArticle.svelte';
     import OpeningBanner from '/src/components/molecules/OpeningBanner.svelte';
     import Article from '/src/components/molecules/Article.svelte';
     import LocationBubble from '/src/components/molecules/LocationBubble.svelte';
-    import CBSStore from '/src/stores/CBSStore.js'
-    import CBSProvincesStore from '/src/stores/CBSProvincesStore.js'
-    import { setupCBSData } from '/src/script/GetCBSDataset.js'
-    import { setupRDWData } from '/src/script/GetRDWDataset.js'
     import Button from '/src/components/atoms/CustomButton.svelte';
     import Checkbox from '/src/components/atoms/CustomCheckbox.svelte';
     import InputList from '/src/components/atoms/CustomInputList.svelte';  
+    import Chart from '/src/components/molecules/Chart.svelte';
+
+    // Import Stores
+    import CBSStore from '/src/stores/CBSStore.js'
+    import CBSProvincesStore from '/src/stores/CBSProvincesStore.js'
+    import RDWStore from '/src/stores/RDWStore.js'
+
+    // Import Helpers
+    import { setupCBSData } from '/src/script/GetCBSDataset.js'
+    import { setupRDWData } from '/src/script/GetRDWDataset.js'
     import * as d3 from 'd3';
 
     $: provinces = []; 
-    let data = [];
+    let dataCBS = [];
+    let dataRDW = [];
     $: userInputLocations = [];
+    $: chartData = [];
     let unsubProvince;
     let unsubCBS;
+    let unsubRDW;
+
  
     onMount(async function () {
         console.log('component mounted')
-        data = await setupCBSData();  
-        const rdwData = await setupRDWData();
-        console.log('rdw', rdwData);
-        unsubCBS = CBSStore.subscribe(storeData => {
-            userInputLocations = storeData;  
-        });
-        unsubProvince = CBSProvincesStore.subscribe(data => {
-            provinces = data; 
-            console.log('data', data) 
-        });  
+        // fetch data from CBS
+        dataCBS = await setupCBSData(); 
+        // fetch data from RDW
+        // dataRDW = await setupRDWData();
+        // console.log('rdw', dataRDW);
+        subscribeStores();
         if(!userInputLocations[0]){
-            userInputLocations.push(data[12])   
-        } 
+            userInputLocations.push(dataCBS[12])   
+        }
+        // if(!chartData[0]){
+        //     chartData = dataRDW
+        // } 
         userInputLocations = userInputLocations;
         console.log(userInputLocations)
         return userInputLocations;
@@ -49,12 +59,31 @@
         })
         unsubProvince(); 
         unsubCBS(); 
+        // unsubRDW();
     });  
+
+    // UPDATE RDW
+    // RDWStore.update(() => { 
+    //         return dataRDW;   
+    //     }); 
+
+    function subscribeStores() {
+        unsubCBS = CBSStore.subscribe(storeData => {
+            userInputLocations = storeData;  
+        });
+        unsubProvince = CBSProvincesStore.subscribe(storeData => {
+            provinces = storeData; 
+        }); 
+        // unsubRDW = RDWStore.subscribe(storeData => {
+        //     storeData = dataRDW;
+        //     chartData = storeData;  
+        // });
+    }
  
     function addLocation(locationName) {
         console.log('running addlocation')
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].location === locationName) {
+        for (let i = 0; i < dataCBS.length; i++) {
+            if (dataCBS[i].location === locationName) {
                 let isDouble = (userInputLocations.filter(location => location.location === locationName).length) > 0;
                 provinces.forEach(province => { //change the province array for the store
                     if(province.name === locationName){
@@ -65,7 +94,7 @@
                     removeLocation(locationName)
                 }
                 else{
-                    userInputLocations.push(data[i]);
+                    userInputLocations.push(dataCBS[i]);
                     userInputLocations = userInputLocations;
                     console.log(userInputLocations)
                 }
@@ -134,7 +163,10 @@
     </Article>
     <Article 
     h2Content='Hoeveel invalide parkeerplekken zijn beschikbaar?'
-    pContent='bar chart met invalide inwoners en percentages vermelden'/>
+    pContent='bar chart met invalide inwoners en percentages vermelden'>
+        <Chart/>
+    </Article>
+
     <Article 
     h2Content='Hoeveel inwoners zijn er invalide?'
     pContent='bar chart met invalide inwoners en percentages vermelden'/>
