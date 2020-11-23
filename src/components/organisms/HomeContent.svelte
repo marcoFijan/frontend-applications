@@ -35,15 +35,18 @@
         // fetch data from CBS
         dataCBS = await setupCBSData(); 
         // fetch data from RDW
-        // dataRDW = await setupRDWData();
-        // console.log('rdw', dataRDW);
+        dataRDW = await setupRDWData();
+        console.log('rdw', dataRDW);
         subscribeStores();
         if(!userInputLocations[0]){
             userInputLocations.push(dataCBS[12])   
         }
-        // if(!chartData[0]){
-        //     chartData = dataRDW
-        // } 
+        if(!chartData[0]){
+            chartData = dataRDW
+        } 
+        RDWStore.update(() => { 
+            return dataRDW;   
+        }); 
         userInputLocations = userInputLocations;
         console.log(userInputLocations)
         return userInputLocations;
@@ -59,7 +62,7 @@
         })
         unsubProvince(); 
         unsubCBS(); 
-        // unsubRDW();
+        unsubRDW();
     });  
 
     // UPDATE RDW
@@ -74,10 +77,10 @@
         unsubProvince = CBSProvincesStore.subscribe(storeData => {
             provinces = storeData; 
         }); 
-        // unsubRDW = RDWStore.subscribe(storeData => {
-        //     storeData = dataRDW;
-        //     chartData = storeData;  
-        // });
+        unsubRDW = RDWStore.subscribe(storeData => {
+            storeData = dataRDW;
+            chartData = storeData;  
+        });
     }
  
     function addLocation(locationName) {
@@ -164,9 +167,12 @@
     <Article 
     h2Content='Hoeveel invalide parkeerplekken zijn beschikbaar?'
     pContent='bar chart met invalide inwoners en percentages vermelden'>
+    {#await dataRDW}
+        Fetching data.
+    {:then fetch}
         <Chart/>
+    {/await}
     </Article>
-
     <Article 
     h2Content='Hoeveel inwoners zijn er invalide?'
     pContent='bar chart met invalide inwoners en percentages vermelden'/>
