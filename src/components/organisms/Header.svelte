@@ -13,7 +13,6 @@
         background: linear-gradient(rgba(75, 75, 75, 0.7), rgba(0,212,255,0));
     }
 </style>
-
 <header>
     <NavBar/>
 </header>

@@ -3,7 +3,7 @@ const cbsUrl =
 
 let data = [];
 
-export async function setupData() {
+export async function setupCBSData() {
   data = await getData();
   const averagePercentage = Math.round(getAverage(data));
   data.push({

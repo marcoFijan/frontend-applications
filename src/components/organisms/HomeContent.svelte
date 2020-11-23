@@ -1,15 +1,17 @@
 <script>
-    import { onDestroy, beforeUpdate, onMount, tick } from 'svelte'
+    import { onDestroy, onMount, tick } from 'svelte'
     import OpeningArticle from '/src/components/molecules/OpeningArticle.svelte';
     import OpeningBanner from '/src/components/molecules/OpeningBanner.svelte';
     import Article from '/src/components/molecules/Article.svelte';
     import LocationBubble from '/src/components/molecules/LocationBubble.svelte';
     import CBSStore from '/src/stores/CBSStore.js'
     import CBSProvincesStore from '/src/stores/CBSProvincesStore.js'
-    import { setupData } from '/src/script/GetCBSDataset.js'
+    import { setupCBSData } from '/src/script/GetCBSDataset.js'
+    import { setupRDWData } from '/src/script/GetRDWDataset.js'
     import Button from '/src/components/atoms/CustomButton.svelte';
     import Checkbox from '/src/components/atoms/CustomCheckbox.svelte';
     import InputList from '/src/components/atoms/CustomInputList.svelte';  
+    import * as d3 from 'd3';
 
     $: provinces = []; 
     let data = [];
@@ -19,11 +21,13 @@
  
     onMount(async function () {
         console.log('component mounted')
-        data = await setupData();  
+        data = await setupCBSData();  
+        const rdwData = await setupRDWData();
+        console.log('rdw', rdwData);
         unsubCBS = CBSStore.subscribe(storeData => {
             userInputLocations = storeData;  
         });
-        unsubProvince =  CBSProvincesStore.subscribe(data => {
+        unsubProvince = CBSProvincesStore.subscribe(data => {
             provinces = data; 
             console.log('data', data) 
         });  

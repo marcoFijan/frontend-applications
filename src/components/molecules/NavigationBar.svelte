@@ -10,7 +10,7 @@
 </style>
 
 <Nav>
-    <List class="navList">
+    <List>
         <NavItem url='#problem' content='Home'/>
         <NavItem url='#availibility' content='Fetchen van Data'/>
         <NavItem url='#amount' content='Bronnen'/>
