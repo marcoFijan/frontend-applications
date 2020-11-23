@@ -20,7 +20,7 @@
 
     const width = 700
     const height = 400
-    const margin = { left: 70, right: 20, bottom: 100, top: 50 }
+    const margin = { left: 45, right: 20, bottom: 100, top: 50 }
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
     //-- Y & X Values --
@@ -138,8 +138,8 @@ svg > text{
     <g class="yAxis">
         {#each yTicks() as tick}
           <g class="tick tick-{tick}" transform="translate(0, {scaleY(tick)})">
-            <line x2="100%" />
-            <text y="-4">{tick}</text>
+            <line x1="{margin.left}" x2="{innerWidth+margin.left}" />
+            <text y="4" x="0">{tick}</text>
           </g>
         {/each}
       </g>
@@ -150,7 +150,7 @@ svg > text{
                 <rect
                     width={scaleX.bandwidth()}
                     height={scaleY(bar[0]) - scaleY(bar[1])}
-                    x={scaleX(bar.data.province)}
+                    x={scaleX(bar.data.province)+margin.left}
                     y={scaleY(bar[1])}
                 /> 
                 {/each}
