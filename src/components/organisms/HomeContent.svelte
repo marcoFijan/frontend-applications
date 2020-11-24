@@ -22,7 +22,7 @@
 
     $: provinces = []; 
     let dataCBS = [];
-    let dataRDW = [];
+    let dataRDW = setupRDWData();
     $: userInputLocations = [];
     $: chartData = [];
     let unsubProvince;
@@ -169,8 +169,8 @@
     pContent='bar chart met invalide inwoners en percentages vermelden'>
     {#await dataRDW}
         Fetching data.
-    {:then fetch}
-        <Chart/>
+    {:then fetchedData}
+        <Chart dataRDW={fetchedData}/>
     {/await}
     </Article>
     <Article 

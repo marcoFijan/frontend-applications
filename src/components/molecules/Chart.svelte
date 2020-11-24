@@ -3,25 +3,21 @@
     import { beforeUpdate, onDestroy, onMount } from 'svelte'
     import * as d3 from "d3";
     import RDWStore from '/src/stores/RDWStore.js'
-    import { setupRDWData } from '/src/script/GetRDWDataset.js'
+    import FilterStore from '/src/stores/FilterStore.js'
 
     // Export
-    
+    export let dataRDW;
 
     let unsubRDW;
-    let dataRDW = [];
+    let unsubFilter;
+    // let dataRDW = [];
     let dataRDWFilter = [];
     let stackedBars = [];
-    let hasNoBigBar = false;
-    let hasKnown = true;
-
-
-    const svg = d3.select('svg')
-
-    let filteredData
-    let g
-
-    const width = 1000;
+    let hasNoBigBar;
+    let isPercentage;
+    let hasKnown;
+    
+    const width = 800;
     const height = 400;
     const margin = { left: 70, right: 20, bottom: 100, top: 50 };
     const innerWidth = width - margin.left - margin.right;
@@ -34,22 +30,26 @@
     let barKeys = ['totalDisabledCapacity', 'totalNotDisabledCapacity'];
     let stackGenerator = d3.stack().keys(barKeys)
     const valueX = d => d.province 
-    unsubRDW = RDWStore.subscribe(storeData => {
-        dataRDW = storeData; 
-        dataRDWFilter = dataRDW;
+    // unsubRDW = RDWStore.subscribe(storeData => {
+    //     dataRDW = storeData; 
+    //     dataRDWFilter = dataRDW; 
+    // });
+    console.log('fetcheddata', dataRDW);
+    dataRDWFilter = dataRDW;
+
+    unsubFilter = FilterStore.subscribe(storeData => {
+        hasNoBigBar = storeData.hasNoBigBar;
+        isPercentage = storeData.isPercentage;
+        hasKnown = storeData.hasKnown;
     });
+    
 
 
     onDestroy(() =>{
         console.log('component destroyed'); 
-        unsubRDW();
+        // unsubRDW();
+        unsubFilter();
     }); 
-
-    if(hasKnown){
-        filterUnknown();
-        console.log('it has not')
-    }
-
 
     stackedBars = stackGenerator(dataRDWFilter);
     console.log('dataRDW', stackedBars)
@@ -81,8 +81,26 @@
         return ticks;
   };
 
-  function filterUnknown(){
+    if(isPercentage){
+        console.log('check')
+        showPercentage();
+    }
+
     if(hasKnown){
+        console.log('check')
+        removeUnknown();
+    }
+    
+    if(hasNoBigBar){
+        console.log('check')
+        removeBigBar();
+    }
+
+
+
+
+  function showPercentage(){
+    if(isPercentage){
         barKeys = ['percentageAvailible'];
         stackGenerator = d3.stack().keys(barKeys)
         stackedBars = stackGenerator(dataRDWFilter);
@@ -94,6 +112,50 @@
         stackedBars = stackGenerator(dataRDWFilter);
         yAxisTitle = "Aantal parkeerplaatsen";
     }
+    console.log(dataRDWFilter)
+    updateFilter();
+  }
+
+  function removeUnknown(){
+      if(hasKnown){
+        dataRDWFilter = dataRDWFilter.filter(province => province.province !== 'onbekend') // return array without that highestCapacity
+      }
+      else{
+        dataRDWFilter = dataRDW;  
+        if(hasNoBigBar){
+            removeBigBar();
+        }
+      }
+      console.log(dataRDWFilter)
+      stackedBars = stackGenerator(dataRDWFilter);
+      updateFilter();
+  }
+  
+  function removeBigBar(){
+    if (hasNoBigBar){
+        const noUnknownProvinces = dataRDW.filter(garage => garage.province !== 'onbekend')  // Don't filter the unknown province data
+        const highestCapacity = d3.max(noUnknownProvinces.map(province => province.totalCapacity)) // calculate province with highestCapacity
+        dataRDWFilter = dataRDWFilter.filter(province => province.totalCapacity !== highestCapacity) // return array without that highestCapacity
+    }
+    else {
+        dataRDWFilter = dataRDW;
+        if(hasKnown){
+            removeUnknown();
+        }
+    }
+    console.log(dataRDWFilter)
+    stackedBars = stackGenerator(dataRDWFilter);
+    updateFilter();
+  }
+
+  function updateFilter(){
+    FilterStore.update(() => { 
+       return {
+        hasNoBigBar: hasNoBigBar,
+        isPercentage: isPercentage,
+        hasKnown: hasKnown
+        };       
+    }); 
   }
 
 
@@ -129,9 +191,9 @@ text{
     text-anchor: start;
 }
 
-.layers>text{
-    font-size: 1.5em;
-    text-anchor: middle;
+.xAxis>.tick>text{
+    font-size: .85em;
+    text-anchor: center;
     fill: #2A292F; 
 }
 
@@ -176,7 +238,6 @@ svg > text{
     font-size: .9em;
     text-shadow: .5px .5px white;
     opacity: 0;
-
 }
 
 rect:hover + .label, .label:hover, rect:hover{
@@ -203,7 +264,7 @@ rect:hover + .label, .label:hover, rect:hover{
         {#each stackedBars as layer }
             <g class="tick" transform="translate({scaleX(layer)},{innerHeight})">
                 {#each layer as bar}
-                    <text x={scaleX(bar.data.province)+margin.left} y={innerHeight+margin.top+12} transform="rotate(4)">{bar.data.province}</text>
+                    <text x={scaleX(bar.data.province)+margin.left} y={innerHeight+margin.top+12}>{bar.data.province}</text>
                 {/each}
             </g>
         {/each}
@@ -227,11 +288,15 @@ rect:hover + .label, .label:hover, rect:hover{
 </svg>
 <ul>
     <li>
-      <input type="checkbox" id="filterUnknown" name="filterUnknown" bind:checked={hasKnown} on:change={filterUnknown}>
-      <label for="filterUnknown">Verwijder onbekende locatie data</label>
+      <input type="checkbox" id="showPercentage" name="showPercentage" disabled={hasNoBigBar} bind:checked={isPercentage} on:change={showPercentage}>
+      <label for="showPercentage">Percentages</label>
     </li>
     <li>
-      <input type="checkbox" id="filterBigBar" name="filterBigBar" bind:checked={hasNoBigBar}>
-      <label for="filterBigBar">Verwijder provincie met de meeste parkeerplaatsen</label>
+      <input type="checkbox" id="filterUnknown" name="filterUnknown" bind:checked={hasKnown} on:change={removeUnknown}>
+      <label for="filterUnknown">Verwijder data van onbekende provincie</label>
+    </li>
+    <li>
+        <input type="checkbox" id="filterBigBar" name="filterBigBar" bind:checked={hasNoBigBar} disabled={isPercentage} on:change={removeBigBar}>
+        <label for="filterBigBar">Verwijder provincie met de meeste parkeerplaatsen</label>
     </li>
   </ul>
