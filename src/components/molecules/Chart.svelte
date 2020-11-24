@@ -13,7 +13,7 @@
     let dataRDWFilter = [];
     let stackedBars = [];
     let hasNoBigBar = false;
-    let hasKnown = false;
+    let hasKnown = true;
 
 
     const svg = d3.select('svg')
@@ -21,7 +21,7 @@
     let filteredData
     let g
 
-    const width = 700;
+    const width = 1000;
     const height = 400;
     const margin = { left: 70, right: 20, bottom: 100, top: 50 };
     const innerWidth = width - margin.left - margin.right;
@@ -45,9 +45,10 @@
         unsubRDW();
     }); 
 
-    beforeUpdate(() => {
-
-    })
+    if(hasKnown){
+        filterUnknown();
+        console.log('it has not')
+    }
 
 
     stackedBars = stackGenerator(dataRDWFilter);
@@ -93,23 +94,6 @@
         stackedBars = stackGenerator(dataRDWFilter);
         yAxisTitle = "Aantal parkeerplaatsen";
     }
-
-
-    // dataRDWFilter = [...dataRDW];
-    //   if(hasKnown){
-    //     dataRDWFilter = dataRDW.filter(province => province.province !== 'onbekend') // return array without that highestCapacity
-    //     console.log('filter', dataRDWFilter)
-        // RDWStore.update(() => { 
-        //     return dataRDWFilter;   
-        // }); 
-    //   }
-    //   else if(!hasKnown){
-    //       dataRDWFilter = dataRDW;
-    //       console.log('go back', dataRDWFilter)
-        //   RDWStore.update(() => { 
-        //     return dataRDW;   
-        //   }); 
-    //   }
   }
 
 
@@ -131,9 +115,9 @@ rect{
   /* transition: ease-in .2s; */
 }
 
-rect:hover{
+/* rect:hover{
     opacity: 1;
-}
+} */
 
 .tick{
     font-size: 0.725em;
@@ -152,7 +136,7 @@ text{
 }
 
 .tick line{
-    stroke: #A5A5A6;
+    stroke: #cfcfcf;
 }
 
 svg > text{
@@ -186,6 +170,20 @@ svg > text{
 .layers .layer:nth-child(3){
     fill: #0077cc;
 }
+
+.label{
+    text-anchor: middle;
+    font-size: .9em;
+    text-shadow: .5px .5px white;
+    opacity: 0;
+
+}
+
+rect:hover + .label, .label:hover, rect:hover{
+    opacity: 1;
+    cursor: default;
+}
+
 </style>
 
 <h1>a chart</h1>
@@ -205,7 +203,7 @@ svg > text{
         {#each stackedBars as layer }
             <g class="tick" transform="translate({scaleX(layer)},{innerHeight})">
                 {#each layer as bar}
-                    <text x={scaleX(bar.data.province)+margin.left} y={innerHeight+margin.top+12}>{bar.data.province}</text>
+                    <text x={scaleX(bar.data.province)+margin.left} y={innerHeight+margin.top+12} transform="rotate(4)">{bar.data.province}</text>
                 {/each}
             </g>
         {/each}
@@ -221,6 +219,7 @@ svg > text{
                     x={scaleX(bar.data.province)+margin.left}
                     y={scaleY(bar[1])+margin.top}
                 /> 
+                <text class="label" x={scaleX(bar.data.province)+margin.left + (scaleX.bandwidth() / 2)} y={scaleY(bar[1])+margin.top}>{Math.round(bar[1])}</text>
                 {/each}
             </g>
         {/each}
