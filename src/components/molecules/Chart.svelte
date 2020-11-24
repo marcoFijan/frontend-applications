@@ -1,6 +1,6 @@
 <script>
     // Import
-    import { onDestroy, onMount } from 'svelte'
+    import { beforeUpdate, onDestroy, onMount } from 'svelte'
     import * as d3 from "d3";
     import RDWStore from '/src/stores/RDWStore.js'
     import { setupRDWData } from '/src/script/GetRDWDataset.js'
@@ -9,8 +9,8 @@
     
 
     let unsubRDW;
-    let dataRDW;
-    let dataRDWFilter;
+    let dataRDW = [];
+    let dataRDWFilter = [];
     let stackedBars = [];
     let hasNoBigBar = false;
     let hasKnown = false;
@@ -26,28 +26,33 @@
     const margin = { left: 70, right: 20, bottom: 100, top: 50 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
-    const mainTitle = "Aantal parkeerplaatsen per provincie";
-    const xAxisTitle = "Provincies";
-    const yAxisTitle = "Aantal parkeerplaatsen";
+    let mainTitle = "Aantal beschikbare parkeerplaatsen per provincie";
+    let xAxisTitle = "Provincies";
+    let yAxisTitle = "Aantal parkeerplaatsen";
     //-- Y & X Values --
 
-
-
-
-    const stackGenerator = d3.stack().keys(['totalDisabledCapacity', 'totalNotDisabledCapacity'])
+    let barKeys = ['totalDisabledCapacity', 'totalNotDisabledCapacity'];
+    let stackGenerator = d3.stack().keys(barKeys)
     const valueX = d => d.province 
     unsubRDW = RDWStore.subscribe(storeData => {
-            dataRDW = storeData; 
-            dataRDWFilter = dataRDW; 
-        });
+        dataRDW = storeData; 
+        dataRDWFilter = dataRDW;
+    });
+
 
     onDestroy(() =>{
         console.log('component destroyed'); 
         unsubRDW();
     }); 
 
+    beforeUpdate(() => {
+
+    })
+
+
     stackedBars = stackGenerator(dataRDWFilter);
     console.log('dataRDW', stackedBars)
+
 
     $: colorScale = d3.scaleOrdinal()
         .domain(['totalDisabledCapacity', 'totalNotDisabledCapacity'])
@@ -76,10 +81,35 @@
   };
 
   function filterUnknown(){
-      if(hasKnown){
-        dataRDWFilter = dataRDWFilter.filter(province => province.province !== 'onbekend') // return array without that highestCapacity
+    if(hasKnown){
+        barKeys = ['percentageAvailible'];
+        stackGenerator = d3.stack().keys(barKeys)
+        stackedBars = stackGenerator(dataRDWFilter);
+        yAxisTitle = "Invalide parkeerplaatsen (%)";
+    }
+    else{
+        barKeys = ['totalDisabledCapacity', 'totalNotDisabledCapacity'];
+        stackGenerator = d3.stack().keys(barKeys)
+        stackedBars = stackGenerator(dataRDWFilter);
+        yAxisTitle = "Aantal parkeerplaatsen";
+    }
 
-      }
+
+    // dataRDWFilter = [...dataRDW];
+    //   if(hasKnown){
+    //     dataRDWFilter = dataRDW.filter(province => province.province !== 'onbekend') // return array without that highestCapacity
+    //     console.log('filter', dataRDWFilter)
+        // RDWStore.update(() => { 
+        //     return dataRDWFilter;   
+        // }); 
+    //   }
+    //   else if(!hasKnown){
+    //       dataRDWFilter = dataRDW;
+    //       console.log('go back', dataRDWFilter)
+        //   RDWStore.update(() => { 
+        //     return dataRDW;   
+        //   }); 
+    //   }
   }
 
 
@@ -139,12 +169,6 @@ svg > text{
     text-anchor: middle;
 }
 
-/* .title{
-  font-size: 1.5em;
-  text-anchor: middle;
-  fill: #2A292F;
-} */
-
 .xAxis text{
     text-anchor: start;
 }
@@ -156,11 +180,11 @@ svg > text{
 }
 
 .layers .layer:nth-child(2){
-    fill: #BA3E8D;
+    fill: #dd9536;
 }
 
 .layers .layer:nth-child(3){
-    fill: #1A6E93;
+    fill: #0077cc;
 }
 </style>
 
