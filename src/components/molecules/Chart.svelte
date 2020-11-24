@@ -10,7 +10,10 @@
 
     let unsubRDW;
     let dataRDW;
+    let dataRDWFilter;
     let stackedBars = [];
+    let hasNoBigBar = false;
+    let hasKnown = false;
 
 
     const svg = d3.select('svg')
@@ -18,11 +21,14 @@
     let filteredData
     let g
 
-    const width = 700
-    const height = 400
-    const margin = { left: 45, right: 20, bottom: 100, top: 50 }
-    const innerWidth = width - margin.left - margin.right
-    const innerHeight = height - margin.top - margin.bottom
+    const width = 700;
+    const height = 400;
+    const margin = { left: 70, right: 20, bottom: 100, top: 50 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+    const mainTitle = "Aantal parkeerplaatsen per provincie";
+    const xAxisTitle = "Provincies";
+    const yAxisTitle = "Aantal parkeerplaatsen";
     //-- Y & X Values --
 
 
@@ -31,7 +37,8 @@
     const stackGenerator = d3.stack().keys(['totalDisabledCapacity', 'totalNotDisabledCapacity'])
     const valueX = d => d.province 
     unsubRDW = RDWStore.subscribe(storeData => {
-            dataRDW = storeData;  
+            dataRDW = storeData; 
+            dataRDWFilter = dataRDW; 
         });
 
     onDestroy(() =>{
@@ -39,17 +46,8 @@
         unsubRDW();
     }); 
 
-    stackedBars = stackGenerator(dataRDW);
+    stackedBars = stackGenerator(dataRDWFilter);
     console.log('dataRDW', stackedBars)
-
-
-
-    // console.log('fetchdata', fetchedData);
-    // $: stackedBars = stackGenerator(fetchedData);
-    // $: chartData = fetchedData; 
-
-    // stackedBars = stackGenerator(fetchedData);
-    // console.log(stackedBars);
 
     $: colorScale = d3.scaleOrdinal()
         .domain(['totalDisabledCapacity', 'totalNotDisabledCapacity'])
@@ -61,7 +59,7 @@
         .nice()
 
     $: scaleX = d3.scaleBand()
-        .domain(dataRDW.map(valueX)) // Select all the provinces for the domain
+        .domain(dataRDWFilter.map(valueX)) // Select all the provinces for the domain
         .range([0, innerWidth])
         .padding(0.2)
 
@@ -75,86 +73,142 @@
             ticks.push(i);
         }
         return ticks;
-
-    
   };
+
+  function filterUnknown(){
+      if(hasKnown){
+        dataRDWFilter = dataRDWFilter.filter(province => province.province !== 'onbekend') // return array without that highestCapacity
+
+      }
+  }
+
 
 
 </script>
 
 <style>
-  svg{
-  width: 700px;
-  height: 400px;
+svg{
+    color: #2A292F;
+    font-weight: normal;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    width: 100%;
+    height: 400px;
 }
 
 rect{
-  opacity: .8;
+    opacity: .8;
   /* transition: ease-in .2s; */
 }
 
 rect:hover{
-  opacity: 1;
+    opacity: 1;
 }
 
 .tick{
-    font-family: Helvetica, Arial;
     font-size: 0.725em;
     font-weight: 200;
 }
 
 text{
-  fill: #2A292F;
-  text-anchor: start;
+    fill: #2A292F;
+    text-anchor: start;
+}
+
+.layers>text{
+    font-size: 1.5em;
+    text-anchor: middle;
+    fill: #2A292F; 
 }
 
 .tick line{
-  stroke: #A5A5A6;
+    stroke: #A5A5A6;
 }
 
 svg > text{
-  font-size: 1.5em;
+    font-size: 1.5em;
 }
 
-.title{
+.rotate{
+    transform: rotate(90deg);
+    text-anchor: middle;
+}
+
+.subtitle{
+    font-size: 1.2em;
+    text-anchor: middle;
+}
+
+/* .title{
   font-size: 1.5em;
   text-anchor: middle;
   fill: #2A292F;
-}
+} */
 
 .xAxis text{
-  text-anchor: start;
+    text-anchor: start;
 }
 
 .xAxis text.xAxisName, .yAxisName{
-  font-size: 2em;
-  text-anchor: middle;
-  fill: #2A292F;
+    font-size: 2em;
+    text-anchor: middle;
+    fill: #2A292F;
+}
+
+.layers .layer:nth-child(2){
+    fill: #BA3E8D;
+}
+
+.layers .layer:nth-child(3){
+    fill: #1A6E93;
 }
 </style>
 
 <h1>a chart</h1>
 <svg>
     <g class="yAxis">
+        <!-- <text y={margin.top/2} x="{(innerWidth/2)+margin.left}">Een hele mooie chart</text> -->
+        <text class='rotate subtitle' y="-5" x={(innerHeight/2)+margin.top}>{yAxisTitle}</text>
         {#each yTicks() as tick}
           <g class="tick tick-{tick}" transform="translate(0, {scaleY(tick)})">
-            <line x1="{margin.left}" x2="{innerWidth+margin.left}" />
-            <text y="4" x="0">{tick}</text>
+            <line x1="{margin.left}" x2="{innerWidth+margin.left}" y1={margin.top} y2={margin.top} />
+            <text y={4+margin.top} x="25">{tick}</text>
           </g>
         {/each}
-      </g>
+    </g>
     <g class="xAxis">
-        {#each stackedBars as layer, i}
+        <text class='subtitle' y="{height}" x="{(innerWidth/2)+margin.left}">{xAxisTitle}</text>
+        {#each stackedBars as layer }
+            <g class="tick" transform="translate({scaleX(layer)},{innerHeight})">
+                {#each layer as bar}
+                    <text x={scaleX(bar.data.province)+margin.left} y={innerHeight+margin.top+12}>{bar.data.province}</text>
+                {/each}
+            </g>
+        {/each}
+    </g>
+    <g class="layers">
+        <text y={margin.top/2} x="{(innerWidth/2)+margin.left}">{mainTitle}</text>
+        {#each stackedBars as layer}
             <g class="layer">
-                {#each layer as bar, i}
+                {#each layer as bar}
                 <rect
                     width={scaleX.bandwidth()}
                     height={scaleY(bar[0]) - scaleY(bar[1])}
                     x={scaleX(bar.data.province)+margin.left}
-                    y={scaleY(bar[1])}
+                    y={scaleY(bar[1])+margin.top}
                 /> 
                 {/each}
             </g>
         {/each}
     </g>
 </svg>
+<ul>
+    <li>
+      <input type="checkbox" id="filterUnknown" name="filterUnknown" bind:checked={hasKnown} on:change={filterUnknown}>
+      <label for="filterUnknown">Verwijder onbekende locatie data</label>
+    </li>
+    <li>
+      <input type="checkbox" id="filterBigBar" name="filterBigBar" bind:checked={hasNoBigBar}>
+      <label for="filterBigBar">Verwijder provincie met de meeste parkeerplaatsen</label>
+    </li>
+  </ul>

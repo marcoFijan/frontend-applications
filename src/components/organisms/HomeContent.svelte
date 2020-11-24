@@ -28,6 +28,7 @@
     let unsubProvince;
     let unsubCBS;
     let unsubRDW;
+    let width;
 
  
     onMount(async function () {
@@ -164,13 +165,14 @@
             {/each}
         </section>
     </Article>
-    <Article 
+    <Article bind:clientWidth={width}
     h2Content='Hoeveel invalide parkeerplekken zijn beschikbaar?'
     pContent='bar chart met invalide inwoners en percentages vermelden'>
     {#await dataRDW}
         Fetching data.
     {:then fetch}
-        <Chart/>
+        {console.log('width',{width})}
+        <Chart width={width}/>
     {/await}
     </Article>
     <Article 
