@@ -37,8 +37,6 @@
         isPercentage = storeData.isPercentage;
         hasKnown = storeData.hasKnown;
     });
-    
-
 
     onDestroy(() =>{
         console.log('component destroyed'); 

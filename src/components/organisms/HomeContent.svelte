@@ -5,7 +5,6 @@
     import OpeningBanner from '/src/components/molecules/OpeningBanner.svelte';
     import Article from '/src/components/molecules/Article.svelte';
     import LocationBubble from '/src/components/molecules/LocationBubble.svelte';
-    import Button from '/src/components/atoms/CustomButton.svelte';
     import Checkbox from '/src/components/atoms/CustomCheckbox.svelte';
     import InputList from '/src/components/atoms/CustomInputList.svelte';  
     import Chart from '/src/components/molecules/Chart.svelte';
@@ -13,16 +12,18 @@
     // Import Stores
     import CBSStore from '/src/stores/CBSStore.js'
     import CBSProvincesStore from '/src/stores/CBSProvincesStore.js'
-    // import RDWStore from '/src/stores/RDWStore.js'
 
     // Import Helpers
     import { setupCBSData } from '/src/script/GetCBSDataset.js'
     import { setupRDWData } from '/src/script/GetRDWDataset.js'
-    import * as d3 from 'd3';
+
+    // Exports
+    export let dataCBS;
+    export let dataRDW;
 
     $: provinces = []; 
-    let dataCBS = [];
-    let dataRDW = setupRDWData();
+    // let dataCBS = [];
+    // let dataRDW = setupRDWData();
     $: userInputLocations = [];
     $: chartData = [];
     let unsubProvince;
@@ -30,16 +31,8 @@
 
  
     onMount(async function () {
-        console.log('component mounted')
-        // fetch data from CBS
-        dataCBS = await setupCBSData(); 
-        // fetch data from RDW
-        dataRDW = await setupRDWData();
         console.log('rdw', dataRDW);
         subscribeStores();
-        // if(!userInputLocations[0]){
-        //     userInputLocations.push(dataCBS[12])   
-        // }
         if(!chartData[0]){
             chartData = dataRDW
         } 
@@ -122,17 +115,25 @@
         padding: .8em 0;
     }
 </style>
-<!-- <Sidebar/> -->
 
 <main>
+    <!-- Openingsarticle with a banner, big title and description -->
     <OpeningBanner/>
     <OpeningArticle 
-      h2Content='Het probleem' 
-      pContent='In Nederland zijn er, volgens de cijfers van het CBS, gemiddeld 12% inwoners van een stad met een lichamelijke beperking. Dit vind ik een aardig hoog percentage. Niet alle mensen met een lichamelijke beperking zullen zelf auto kunnen rijden. Maar deze mensen kunnen natuurlijk wel vervoerd of gebracht worden met de auto. Wanneer een parkeergarage in een centrum dan niet toegankelijk is voor lichamelijk gehandicapten, kan dat betekenen dat zij niet even kunnen winkelen of shoppen. Zelfde geld voor simpelweg de boodschappen doen in een supermarkt. Aangezien ik in de dataset van RWD best veel nullen zag staan (geen toegang voor lichamelijk gehandicapten), leek het mij interessant om te onderzoeken waar nu precies die parkeerplaatsen staan.'
+        h2Content='Het probleem' 
+        pContent='In Nederland zijn er, volgens de cijfers van het CBS, gemiddeld 12% inwoners van een stad met een lichamelijke beperking. Dit vind ik een aardig hoog percentage. Niet alle mensen met een lichamelijke beperking zullen zelf auto kunnen rijden. Maar deze mensen kunnen natuurlijk wel vervoerd of gebracht worden met de auto. Wanneer een parkeergarage in een centrum dan niet toegankelijk is voor lichamelijk gehandicapten, kan dat betekenen dat zij niet even kunnen winkelen of shoppen. Zelfde geld voor simpelweg de boodschappen doen in een supermarkt. Aangezien ik in de dataset van RWD best veel nullen zag staan (geen toegang voor lichamelijk gehandicapten), leek het mij interessant om te onderzoeken waar nu precies die parkeerplaatsen staan.'
     />
+
+    <!-- Article where the user can see if his province has enough availible parkingspots for phisical limitated people -->
+    <Article 
+        h2Content='Hoe goed toegankelijk zijn de parkeerplekken in jou provincie??'
+        pContent='Kies hieronder je provincie om te zien of jou provincie voldoende toegankelijke parkeergelegenheden heeft voor minder valide mensen'>
+    </Article>
+
+    <!-- Article with 'bubbles' with the percentage of phisical limited people per province -->
     <Article  
-    h2Content='Hoeveel inwoners zijn er invalide?'
-    pContent='Volgens de cijfers van het CBS heeft gemiddeld 15% van de Nederlandse bevolking 1 of meerdere fysieke handicap. Dit zou betekenen dat minimaal 15% van de parkeergarages beschikbaar zouden moeten zijn voor mensen met een lichamelijke handicap. Maar is dat ook zo? Daarnaast is het gemiddelde 15 procent, maar er zijn ook provincies waar er meer mensen wonen met een lichamelijke beperking. Vind uw eigen provincie:'>
+        h2Content='Hoeveel inwoners zijn er invalide?'
+        pContent='Volgens de cijfers van het CBS heeft gemiddeld 15% van de Nederlandse bevolking 1 of meerdere fysieke handicap. Dit zou betekenen dat minimaal 15% van de parkeergarages beschikbaar zouden moeten zijn voor mensen met een lichamelijke handicap. Maar is dat ook zo? Daarnaast is het gemiddelde 15 procent, maar er zijn ook provincies waar er meer mensen wonen met een lichamelijke beperking. Vind uw eigen provincie:'>
         <InputList>
             {#each provinces as item}  
                 <li>
@@ -149,17 +150,16 @@
             {/each}
         </section>
     </Article>
+    
+    <!-- Article with graph about the availible parkingspots per province -->
     <Article 
-    h2Content='Hoeveel invalide parkeerplekken zijn beschikbaar?'
-    pContent='bar chart met invalide inwoners en percentages vermelden'>
-    {#await dataRDW}
-        Fetching data.
-    {:then fetchedData}
-        <Chart dataRDW={fetchedData}/>
-    {/await}
+        h2Content='Hoeveel invalide parkeerplekken zijn beschikbaar?'
+        pContent='bar chart met invalide inwoners en percentages vermelden'>
+        <!-- Wait for the data here, other articles can be loaded in the meantime -->
+        {#await dataRDW}
+            Fetching data. 
+        {:then fetchedData}
+            <Chart dataRDW={fetchedData}/>
+        {/await}
     </Article>
-    <Article 
-    h2Content='Hoeveel inwoners zijn er invalide?'
-    pContent='bar chart met invalide inwoners en percentages vermelden'/>
-
 </main>

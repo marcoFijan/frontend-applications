@@ -1,18 +1,5 @@
 <script type="text/javascript">
-  import Nested from './Nested.svelte';
-  import H1 from '/src/components/atoms/Header1.svelte';
-  import H2 from '/src/components/atoms/Header2.svelte';
-  import H3 from '/src/components/atoms/Header3.svelte';
-  import H4 from '/src/components/atoms/Header4.svelte';
-  import P from '/src/components/atoms/Paragraph.svelte';
-  import NavBar from '/src/components/molecules/NavigationBar.svelte';
-  import Home from '/src/components/templates/Home.svelte';
-  import BannerImage from '/src/components/atoms/BannerImage.svelte';
-  import BannerTitle from '/src/components/atoms/BannerTitle.svelte';
-  // import Nav from '/src/components/atoms/Nav.svelte';
-  // import NavList from '/src/components/atoms/NavList.svelte';
-  // import NavListItem from '/src/components/atoms/NavListItem.svelte';
-  // export let name = 'unknown';
+  import HomePage from '/src/components/pages/HomePage.svelte';
 </script>
 
 <style>
@@ -33,7 +20,8 @@
   
 </style>
 
-<Home/>
+<HomePage/>
+
 
 <!-- <section>
   <BannerImage src='/public/wheelchair.jpg' alt='wheelchair image'/>
