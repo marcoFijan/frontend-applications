@@ -5,7 +5,7 @@ let data = [];
 
 export async function setupCBSData() {
   data = await getData();
-  const averagePercentage = Math.round(getAverage(data));
+  const averagePercentage = getAverage(data).toFixed(1);
   data.push({
     location: "Nederland",
     percentage: averagePercentage,

@@ -1,7 +1,6 @@
 <script>
-    export let buttonEvent;
+    // export let buttonEvent;
     export let buttonText;
-    export let selected = false;
 
     // function handleClick(){
     //    selected = !selected;
@@ -15,29 +14,30 @@
 
 <style>
     button{
-        /* color: #BA3E8D; */
         background: white;
         font-size: 1em;
-        color: #0077cc;
-        border: 1px solid #0077cc;
+        color: #236E96;
+        border: 1px solid #236E96;
         border-radius: 2em;
-        padding: 1em;
-        width: 10em;
-        margin: .1em .5em;
+        padding: .5em 1em;
+        min-width: 10em;
+        margin: .5em;
+        font-family: 'Roboto', sans-serif;
     }
     button:hover{
-        background: #dd9536;
-        transition: .3s ease-in;
-        
+        transition: .5s ease-in;
+        font-weight: 500;
+        cursor: pointer;
     }
 
-    .selection{
-        background: #0077cc;
+    button:focus{
+        background: #236E96;
         font-size: 1em;
         color: white;
+        font-weight: 500;
     }
 </style>
 
-<button class='{selected ? 'selection': ''}' on:click={buttonEvent}>
+<button type=submit>
     {buttonText}
 </button>

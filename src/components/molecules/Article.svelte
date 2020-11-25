@@ -7,7 +7,7 @@
 
 <style>
     article{
-        padding: 1em 3em;
+        padding: 1em 3em 3em 3em;
     }
 </style>
 

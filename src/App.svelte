@@ -5,7 +5,7 @@
 <style>
   :global(body){
     margin: 0 auto;
-    max-width: 1200px;
+    max-width: 1100px;
     background-image: url('/background.svg');
     background-attachment: fixed;
     background-size: cover;
@@ -14,7 +14,8 @@
   }
 
   :global(strong){
-    color: #0077cc;
+    color: #dd9536;
+    font-size: 110%;
   }
 
   

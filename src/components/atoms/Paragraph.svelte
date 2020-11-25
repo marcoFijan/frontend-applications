@@ -10,4 +10,4 @@
     }
 </style>
 
-<p>{content}</p>
+<p>{@html content}</p>

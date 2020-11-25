@@ -1,5 +1,4 @@
 <script>
-      import H1 from '/src/components/atoms/Header1.svelte';
       import H2 from '/src/components/atoms/Header2.svelte';
       import P from '/src/components/atoms/Paragraph.svelte';
       export let h2Content;
@@ -9,7 +8,7 @@
 
 <style>
     article{
-        background: #dd9536;
+        background: #236E96;
         padding: 1em 3em;
         padding-top: 50vh;
         color: white;

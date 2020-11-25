@@ -4,7 +4,7 @@
         flex-wrap: wrap;
         list-style: none;
         padding: 0;
-        margin: 0 0 1em 0;
+        margin: 3em 0 2em 0;
         justify-content: center;
     }
     
