@@ -51,7 +51,7 @@ let provinces = [
   },
   {
     name: "Nederland",
-    clicked: true,
+    clicked: false,
   },
 ];
 

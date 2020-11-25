@@ -2,13 +2,12 @@
     // Import
     import { beforeUpdate, onDestroy, onMount } from 'svelte'
     import * as d3 from "d3";
-    import RDWStore from '/src/stores/RDWStore.js'
+    // import RDWStore from '/src/stores/RDWStore.js'
     import FilterStore from '/src/stores/FilterStore.js'
 
     // Export
     export let dataRDW;
 
-    let unsubRDW;
     let unsubFilter;
     // let dataRDW = [];
     let dataRDWFilter = [];
@@ -30,10 +29,6 @@
     let barKeys = ['totalDisabledCapacity', 'totalNotDisabledCapacity'];
     let stackGenerator = d3.stack().keys(barKeys)
     const valueX = d => d.province 
-    // unsubRDW = RDWStore.subscribe(storeData => {
-    //     dataRDW = storeData; 
-    //     dataRDWFilter = dataRDW; 
-    // });
     console.log('fetcheddata', dataRDW);
     dataRDWFilter = dataRDW;
 
@@ -47,7 +42,6 @@
 
     onDestroy(() =>{
         console.log('component destroyed'); 
-        // unsubRDW();
         unsubFilter();
     }); 
 

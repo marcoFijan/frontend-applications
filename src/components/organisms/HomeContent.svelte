@@ -13,7 +13,7 @@
     // Import Stores
     import CBSStore from '/src/stores/CBSStore.js'
     import CBSProvincesStore from '/src/stores/CBSProvincesStore.js'
-    import RDWStore from '/src/stores/RDWStore.js'
+    // import RDWStore from '/src/stores/RDWStore.js'
 
     // Import Helpers
     import { setupCBSData } from '/src/script/GetCBSDataset.js'
@@ -27,7 +27,6 @@
     $: chartData = [];
     let unsubProvince;
     let unsubCBS;
-    let unsubRDW;
 
  
     onMount(async function () {
@@ -38,15 +37,12 @@
         dataRDW = await setupRDWData();
         console.log('rdw', dataRDW);
         subscribeStores();
-        if(!userInputLocations[0]){
-            userInputLocations.push(dataCBS[12])   
-        }
+        // if(!userInputLocations[0]){
+        //     userInputLocations.push(dataCBS[12])   
+        // }
         if(!chartData[0]){
             chartData = dataRDW
         } 
-        RDWStore.update(() => { 
-            return dataRDW;   
-        }); 
         userInputLocations = userInputLocations;
         console.log(userInputLocations)
         return userInputLocations;
@@ -62,13 +58,7 @@
         })
         unsubProvince(); 
         unsubCBS(); 
-        unsubRDW();
     });  
-
-    // UPDATE RDW
-    // RDWStore.update(() => { 
-    //         return dataRDW;   
-    //     }); 
 
     function subscribeStores() {
         unsubCBS = CBSStore.subscribe(storeData => {
@@ -77,10 +67,6 @@
         unsubProvince = CBSProvincesStore.subscribe(storeData => {
             provinces = storeData; 
         }); 
-        unsubRDW = RDWStore.subscribe(storeData => {
-            storeData = dataRDW;
-            chartData = storeData;  
-        });
     }
  
     function addLocation(locationName) {
@@ -151,7 +137,6 @@
             {#each provinces as item}  
                 <li>
                     <Checkbox selected={item.clicked} checkboxEvent={() => addLocation(item.name)} labelText={item.name}></Checkbox>
-                    <!-- <Button selected={!item.clicked} buttonEvent={() => addLocation(item.name)} buttonText={item.name}></Button> -->
                 </li>
             {/each}
         </InputList>
