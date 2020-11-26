@@ -1,6 +1,7 @@
 # Functional Applications
 
 Student name: Marco Fijan
+[Live Repo link](https://cocky-northcutt-c3cbf4.netlify.app/)
 
 [![afbeelding.png](https://i.postimg.cc/QMv6JHwQ/afbeelding.png)](https://postimg.cc/Jycc1410)
 

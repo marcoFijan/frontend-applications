@@ -179,11 +179,11 @@
         h2Content='Hoe heb ik de data gebruikt?'
         pContent='De data die ik heb verzameld was lang niet altijd compleet. Soms ontbraken er essentiële gegevens waardoor ik er oorspronkelijk niks aan had. Ik heb daarom veel data moeten opschonen. Hierdoor kan de data een klein beetje een vertekend beeld geven. Hieronder kunt u lezen hoe ik de data heb opgehaald en wat ik precies heb aangepast om de data te gebruiken.'>
         <ArticleSection
-            h3Content='Undefined provinces'
+            h3Content='Provinces'
             pContent='Het kwam wel eens voor dat er undefined provinces tussenzaten. Dit betekent simpelweg dat er geen locatie data beschikbaar is voor die parkeergarage. Ik heb dit opgelost door deze data alsnog wel mee te nemen naar mijn visualisatie door het op te slaan in een provincie genaamd onbekend. Hierdoor is alsnog zichtbaar wat de verhouding en percentage is van de toegankelijke parkeergarages'>
         </ArticleSection>
         <ArticleSection 
-            h3Content='Undefinded capacity'
+            h3Content='Capacity'
             pContent='Het kwam ook voor dat capacity niet was ingevuld. Capacity stond voor het aantal parkeerplekken van die parkeergarage. Dit heb ik opgelost door, van de 5000 parkeergarages die wel capacity hadden, het gemiddelde uit te rekenen. Dat gemiddelde heb ik doorgegeven aan die parkeergarages die geen capacity hadden. Hierdoor kan het zijn dat sommige parkeergarages meer of minder parkeerplekken hebben in mijn visualisatie dan dat ze eigenlijk hebben. Maar dit geeft alsnog een beter beeld dan wanneer ik capacity leeg laat, want dan worden er flink wat parkeergarages niet meegenomen bij het berekenen van de percentages.'>
         </ArticleSection>
         <ArticleSection 
