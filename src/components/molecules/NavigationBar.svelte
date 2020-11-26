@@ -11,8 +11,10 @@
 
 <Nav>
     <List>
-        <NavItem url='#problem' content='Home'/>
-        <NavItem url='#availibility' content='Fetchen van Data'/>
-        <NavItem url='#amount' content='Bronnen'/>
+        <NavItem url='#home' content='Home'/>
+        <NavItem url='#uwprov' content='Vergelijk'/>
+        <NavItem url='#amount' content='Aantal gehandicapten'/>
+        <NavItem url='#chart' content='Diagram'/>
+        <NavItem url='#how' content='Opschonen data'/>
     </List>
 </Nav>

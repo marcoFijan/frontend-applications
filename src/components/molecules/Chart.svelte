@@ -1,22 +1,22 @@
+<!-- SCRIPTS -->
 <script>
-    // Import
-    import { beforeUpdate, onDestroy, onMount } from 'svelte'
+    // IMPORTS
+    import {onDestroy } from 'svelte'
     import * as d3 from "d3";
-    // import RDWStore from '/src/stores/RDWStore.js'
     import FilterStore from '/src/stores/FilterStore.js'
     import H3 from '/src/components/atoms/Header3.svelte';
 
-    // Export
+    // EXPORTS
     export let dataRDW;
 
+    // FILTER VARIABLES
     let unsubFilter;
-    // let dataRDW = [];
     let dataRDWFilter = [];
-    let stackedBars = [];
     let hasNoBigBar;
     let isPercentage;
     let hasKnown;
-    
+
+    // D3 VARIABLES    
     const width = 900;
     const height = 500;
     const margin = { left: 70, right: 20, bottom: 40, top: 50 };
@@ -25,136 +25,132 @@
     let mainTitle = "Aantal beschikbare parkeerplaatsen per provincie";
     let xAxisTitle = "Provincies";
     let yAxisTitle = "Aantal parkeerplaatsen";
-    //-- Y & X Values --
-
     let barKeys = ['totalDisabledCapacity', 'totalNotDisabledCapacity'];
-    let stackGenerator = d3.stack().keys(barKeys)
-    const valueX = d => d.province 
-    console.log('fetcheddata', dataRDW);
+    let stackGenerator = d3.stack().keys(barKeys);
     dataRDWFilter = dataRDW;
+    let stackedBars = stackGenerator(dataRDWFilter);
 
+    // SUBSCRIBE TO STORE
     unsubFilter = FilterStore.subscribe(storeData => {
         hasNoBigBar = storeData.hasNoBigBar;
         isPercentage = storeData.isPercentage;
         hasKnown = storeData.hasKnown;
     });
 
-    onDestroy(() =>{
-        console.log('component destroyed'); 
-        unsubFilter();
-    }); 
-
-    stackedBars = stackGenerator(dataRDWFilter);
-    console.log('dataRDW', stackedBars)
-
-
-    $: colorScale = d3.scaleOrdinal()
-        .domain(['totalDisabledCapacity', 'totalNotDisabledCapacity'])
-        .range(['#BA3E8D', '#1A6E93'])
-
+    // -- REACTIVE VARIABLES -- 
+    // YSCALING FUNCTION
     $: scaleY = d3.scaleLinear()
         .domain([d3.max(stackedBars, layer => d3.max(layer, subLayer => subLayer[1])), 0])
         .range([0, innerHeight])
         .nice()
 
+    // XSCALING FUNCTION
     $: scaleX = d3.scaleBand()
-        .domain(dataRDWFilter.map(valueX)) // Select all the provinces for the domain
+        .domain(dataRDWFilter.map(d => d.province)) // Select all the provinces for the domain
         .range([0, innerWidth])
         .padding(0.2)
 
+    // DRAW TICKS FUNCTION
     $: yTicks = function () {
         const [highestPoint, startPoint] = scaleY.domain();
         let ticks = [];
-        console.log('start', startPoint);
         const steps = (highestPoint - startPoint) / 10;
-        console.log(steps);
         for (let i = startPoint; i <= highestPoint; i=i+steps) {
             ticks.push(i);
         }
         return ticks;
-  };
+    };
 
-    if(isPercentage){
+    // UPDATE FUNCTION: RUN FILTERFUNCTIONS WHEN FILTERS ARE SELECTED ON LOAD
+    function updateChartOnLoad(){
+        if(isPercentage){
         console.log('check')
         showPercentage();
-    }
-
-    if(hasKnown){
-        console.log('check')
-        removeUnknown();
-    }
-    
-    if(hasNoBigBar){
-        console.log('check')
-        removeBigBar();
-    }
-
-
-
-
-  function showPercentage(){
-    if(isPercentage){
-        barKeys = ['percentageAvailible'];
-        stackGenerator = d3.stack().keys(barKeys)
-        stackedBars = stackGenerator(dataRDWFilter);
-        yAxisTitle = "Invalide parkeerplaatsen (%)";
-    }
-    else{
-        barKeys = ['totalDisabledCapacity', 'totalNotDisabledCapacity'];
-        stackGenerator = d3.stack().keys(barKeys)
-        stackedBars = stackGenerator(dataRDWFilter);
-        yAxisTitle = "Aantal parkeerplaatsen";
-    }
-    console.log(dataRDWFilter)
-    updateFilter();
-  }
-
-  function removeUnknown(){
-      if(hasKnown){
-        dataRDWFilter = dataRDWFilter.filter(province => province.province !== 'onbekend') // return array without that highestCapacity
-      }
-      else{
-        dataRDWFilter = dataRDW;  
-        if(hasNoBigBar){
-            removeBigBar();
         }
-      }
-      console.log(dataRDWFilter)
-      stackedBars = stackGenerator(dataRDWFilter);
-      updateFilter();
-  }
-  
-  function removeBigBar(){
-    if (hasNoBigBar){
-        const noUnknownProvinces = dataRDW.filter(garage => garage.province !== 'onbekend')  // Don't filter the unknown province data
-        const highestCapacity = d3.max(noUnknownProvinces.map(province => province.totalCapacity)) // calculate province with highestCapacity
-        dataRDWFilter = dataRDWFilter.filter(province => province.totalCapacity !== highestCapacity) // return array without that highestCapacity
-    }
-    else {
-        dataRDWFilter = dataRDW;
+
         if(hasKnown){
+            console.log('check')
             removeUnknown();
         }
+        
+        if(hasNoBigBar){
+            console.log('check')
+            removeBigBar();
+        }
     }
-    console.log(dataRDWFilter)
-    stackedBars = stackGenerator(dataRDWFilter);
-    updateFilter();
-  }
 
-  function updateFilter(){
-    FilterStore.update(() => { 
-       return {
-        hasNoBigBar: hasNoBigBar,
-        isPercentage: isPercentage,
-        hasKnown: hasKnown
-        };       
+    // FILTER FUNCTION: CONVERT TO PERCENTAGE
+    function showPercentage(){
+        if(isPercentage){
+            barKeys = ['percentageAvailible'];
+            stackGenerator = d3.stack().keys(barKeys)
+            stackedBars = stackGenerator(dataRDWFilter);
+            yAxisTitle = "Invalide parkeerplaatsen (%)";
+        }
+        else{
+            barKeys = ['totalDisabledCapacity', 'totalNotDisabledCapacity'];
+            stackGenerator = d3.stack().keys(barKeys)
+            stackedBars = stackGenerator(dataRDWFilter);
+            yAxisTitle = "Aantal parkeerplaatsen";
+        }
+        updateFilter();
+    } 
+
+    // FILTER FUNCTION: REMOVE UNKNOWN PROVINCE BAR
+    function removeUnknown(){
+        if(hasKnown){
+            dataRDWFilter = dataRDWFilter.filter(province => province.province !== 'onbekend') // return array without that highestCapacity
+        }
+        else{
+            dataRDWFilter = dataRDW;  
+            if(hasNoBigBar){
+                removeBigBar();
+            }
+        }
+        console.log(dataRDWFilter)
+        stackedBars = stackGenerator(dataRDWFilter);
+        updateFilter();
+    }
+    
+    // FILTER FUNCTION: REMOVE THE BIGGEST KNOWN PROVINCE BAR
+    function removeBigBar(){
+        if (hasNoBigBar){
+            const noUnknownProvinces = dataRDW.filter(garage => garage.province !== 'onbekend')  // Don't filter the unknown province data
+            const highestCapacity = d3.max(noUnknownProvinces.map(province => province.totalCapacity)) // calculate province with highestCapacity
+            dataRDWFilter = dataRDWFilter.filter(province => province.totalCapacity !== highestCapacity) // return array without that highestCapacity
+        }
+        else {
+            dataRDWFilter = dataRDW;
+            if(hasKnown){
+                removeUnknown();
+            }
+        }
+        console.log(dataRDWFilter)
+        stackedBars = stackGenerator(dataRDWFilter);
+        updateFilter();
+    }
+    
+    // UPDATE FUNCTION: UPDATE THE STORE
+    function updateFilter(){
+        FilterStore.update(() => { 
+        return {
+            hasNoBigBar: hasNoBigBar,
+            isPercentage: isPercentage,
+            hasKnown: hasKnown
+            };       
+        }); 
+    }
+
+    // RUN UPDATE FUNCTION FOR FILTERS
+    updateChartOnLoad();
+
+    // UNSUBSCRIBE FROM STORE WHEN COMPONENT DESTROYED
+    onDestroy(() =>{
+        unsubFilter();
     }); 
-  }
-
-
-
 </script>
 
+<!-- STYLING -->
 <style>
     /* FILTER STYLING */
     .chartCollection{
@@ -302,13 +298,11 @@
         opacity: 1;
         cursor: default;
     }
-
-    rect:hover > rect{
-        opacity: .3;
-}
-
 </style>
+
+<!-- MARKUP -->
 <div class="chartCollection">
+    <!-- D3 GRAPH -->
     <svg>
         <!-- CREATE YAXIS WITH LABELS -->
         <g class="yAxis">
@@ -350,24 +344,33 @@
             {/each}
         </g>
     </svg>
+    <!-- END OF D3 GRAPH -->
+
+    <!-- FILTERSECTION FOR D3 GRAPH -->
     <form>
+        <!-- FILTERS -->
         <section>
             <H3 content='Filters'/>
             <ul>
+                <!-- FILTER 1: CONVERT TO PERCENTAGES -->
                 <li>
-                <input type="checkbox" id="showPercentage" name="showPercentage" disabled={hasNoBigBar} bind:checked={isPercentage} on:change={showPercentage}>
-                <label for="showPercentage">Percentages</label>
+                    <input type="checkbox" id="showPercentage" name="showPercentage" disabled={hasNoBigBar} bind:checked={isPercentage} on:change={showPercentage}>
+                    <label for="showPercentage">Percentages</label>
                 </li>
+                <!-- FILTER 2: REMOVE UNKNOWN PROVINCE BAR -->
                 <li>
-                <input type="checkbox" id="filterUnknown" name="filterUnknown" bind:checked={hasKnown} on:change={removeUnknown}>
-                <label for="filterUnknown">Verwijder data van onbekende provincie</label>
+                    <input type="checkbox" id="filterUnknown" name="filterUnknown" bind:checked={hasKnown} on:change={removeUnknown}>
+                    <label for="filterUnknown">Verwijder data van onbekende provincie</label>
                 </li>
+                <!-- FILTER 3: REMOVE BIGGEST PROVINCE BAR -->
                 <li>
                     <input type="checkbox" id="filterBigBar" name="filterBigBar" bind:checked={hasNoBigBar} disabled={isPercentage} on:change={removeBigBar}>
                     <label for="filterBigBar">Verwijder provincie met de meeste parkeerplaatsen</label>
                 </li>
             </ul>
         </section>
+        
+        <!-- LEGENDA -->
         <section>
             <H3 content='Legenda'/>
             <ul>
@@ -382,4 +385,6 @@
             </ul>
         </section>
     </form>
+    <!-- END OF FILTERSECTION FOR D3 GRAPH -->
+
 </div>

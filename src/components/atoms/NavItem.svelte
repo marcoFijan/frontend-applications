@@ -19,7 +19,8 @@
         text-shadow: .05em .05em black;
     }
     li:hover{
-        background: white;
+        color: #dd9536;
+        font-weight: 500;
     }
 </style>
   

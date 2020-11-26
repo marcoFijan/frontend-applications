@@ -1,16 +1,16 @@
 <script>
-    // Imports
+    // IMPORTS
     import Select from '/src/components/atoms/Select.svelte';
     import Option from '/src/components/atoms/Option.svelte';
     import Button from '/src/components/atoms/CustomButton.svelte';
     import P from '/src/components/atoms/Paragraph.svelte';
     import H3 from '/src/components/atoms/Header3.svelte';
 
-    // Exports
+    // EXPORTS
     export let dataRDW;
     export let dataCBS;
 
-    // Variables
+    // VARIABLES
     let selected;
     let selectedProvince;
     let hasSelected = false;
@@ -19,7 +19,7 @@
     let mustPercentage;
     const provinces = ['Groningen', 'Friesland', 'Overijssel', 'Drenthe', 'Gelderland', 'Limburg', 'Noord-Brabant', 'Zuid-Holland', 'Noord-Holland', 'Zeeland', 'Utrecht', 'Flevoland']
 
-    // Functions
+    // FUNCTIONS
     function handleSubmit(){
         hasSelected = true;
         console.log(selected);
@@ -37,6 +37,7 @@
     }
 </script>
 
+<!-- STYLING -->
 <style>
     form{
         width: 100%;
@@ -44,7 +45,10 @@
         justify-content: center;
     }
 </style>
+
+<!-- MARKUP -->
 <form>
+    <!-- DROPDOWN -->
 	<Select bind:value={selected} selectEvent={handleSubmit}>
         <Option value="" isDisabled={true} isSelected={true}>Selecteer je provincie</Option>
 		{#each provinces as province}
@@ -53,8 +57,9 @@
             </Option>
 		{/each}
     </Select>
-    <!-- <Button buttonText='Zie'/> -->
 </form>
+
+<!-- SHOW RESULTS IN TEXT -->
 <P content='Kies hierboven je provincie om te zien of jou provincie voldoende toegankelijke parkeergelegenheden heeft voor minder valide mensen'/>
 {#if hasSelected}
     <H3 content='{selectedProvince} heeft <strong>{enough} genoeg</strong> parkeerplekken voor haar invalide inwoners. '/>

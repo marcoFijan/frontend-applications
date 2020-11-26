@@ -18,6 +18,9 @@
     font-size: 110%;
   }
 
+  :global(*){
+    scroll-behavior: smooth; 
+  }
   
 </style>
 
