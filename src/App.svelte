@@ -25,11 +25,3 @@
 </style>
 
 <HomePage/>
-
-
-<!-- <section>
-  <BannerImage src='/public/wheelchair.jpg' alt='wheelchair image'/>
-  <BannerTitle content='Denk aan de invalide!'/>
-</section> -->
-
-
