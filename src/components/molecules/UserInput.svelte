@@ -25,8 +25,8 @@
         console.log(selected);
         console.log(dataRDW);
         console.log(dataCBS);
-        hasPercentage = (dataRDW.filter(index => index.province === selected.toLowerCase()))[0].percentageAvailible.toFixed(2);
-        mustPercentage = (dataCBS.filter(index => index.location.toLowerCase() === selected.toLowerCase()))[0].percentage.toFixed(2);
+        hasPercentage = (dataRDW.filter(index => index.province === selected.toLowerCase()))[0].percentageAvailible;
+        mustPercentage = (dataCBS.filter(index => index.location.toLowerCase() === selected.toLowerCase()))[0].percentage;
         selectedProvince = selected;
         if(hasPercentage < mustPercentage){
             enough = 'NIET';
@@ -34,6 +34,8 @@
         else{
             enough = '';
         }
+        hasPercentage = hasPercentage.toFixed(2);
+        mustPercentage = mustPercentage.toFixed(2);
     }
 </script>
 
