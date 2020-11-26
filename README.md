@@ -1,8 +1,8 @@
-# Functional programming & Frontend data
+# Functional Applications
 
 Student name: Marco Fijan
 
-[![afbeelding.png](https://i.postimg.cc/Xv8q0qbH/afbeelding.png)](https://postimg.cc/wt1gX63L)
+[![afbeelding.png](https://i.postimg.cc/QMv6JHwQ/afbeelding.png)](https://postimg.cc/Jycc1410)
 
 ## The Assignment
 
@@ -52,8 +52,6 @@ From the dataset I need the following data:
 To read how I received and saved the data, please navigate to [receiving the data wiki](https://github.com/marcoFijan/frontend-data/wiki/Ophalen-van-Data) where I go into detail on how I collected and saved that data.
 
 ## Features
-
-### Frontend Data
 
 As of now, this project has the following features:
 
